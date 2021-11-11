@@ -60,34 +60,34 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
       const updated = [...oldBoard];
 
-      // TODO: in the copy, flip this cell and the cells around it
       flipCell(y, x, updated);
       flipCell(y+1, x, updated);
       flipCell(y, x+1, updated);
       flipCell(y-1, x, updated);
       flipCell(y, x-1, updated);
 
-      // TODO: return the copy
       return updated;
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
-
-  // TODO
+  if (hasWon()){
+    return <h1>You win!</h1>
+  }
 
   // make table board
-
-  return (<table>
+  return (<table className="Board">
     <tr>
-      <th>Lights Out</th>
+      <th colspan={ncols}>Lights Out</th>
     </tr>
     {board.map((row, y) => <tr>
       {row.map((cellVal, x) => <Cell isLit={cellVal} coord={`${y}-${x}`} flipCellsAroundMe={flipCellsAround} />)}
     </tr>)}
   </table>)
+}
 
-  // TODO
+Board.defaultProps = {
+  nrows: 3, ncols: 3, chanceLightStartsOn: 0.5
 }
 
 export default Board;
