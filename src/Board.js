@@ -58,11 +58,17 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
         }
       };
 
-      // TODO: Make a (deep) copy of the oldBoard
+      const updated = [...oldBoard];
 
       // TODO: in the copy, flip this cell and the cells around it
+      flipCell(y, x, updated);
+      flipCell(y+1, x, updated);
+      flipCell(y, x+1, updated);
+      flipCell(y-1, x, updated);
+      flipCell(y, x-1, updated);
 
       // TODO: return the copy
+      return updated;
     });
   }
 
@@ -76,8 +82,8 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
     <tr>
       <th>Lights Out</th>
     </tr>
-    {board.map(row => <tr>
-      {row.map(cellVal => <Cell isLit={cellVal} flipCellsAroundMe={flipCellsAround} />)}
+    {board.map((row, y) => <tr>
+      {row.map((cellVal, x) => <Cell isLit={cellVal} coord={`${y}-${x}`} flipCellsAroundMe={flipCellsAround} />)}
     </tr>)}
   </table>)
 
