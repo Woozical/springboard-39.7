@@ -27,7 +27,7 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn, initialActivations }) {
+function Board({ nrows, ncols, initialActivations }) {
   const [board, setBoard] = useState(createBoard);
 
   /** create a board nrows high/ncols wide, with a initialActivations number of randomly-determined cells activated */
@@ -42,7 +42,6 @@ function Board({ nrows, ncols, chanceLightStartsOn, initialActivations }) {
     for (let n = 0; n < initialActivations; n++){
       const x = Math.floor(Math.random() * ncols);
       const y = Math.floor(Math.random() * nrows);
-      console.log(`Activating: (${x}, ${y})`);
       initialBoard = flipCellsAround(`${y}-${x}`, false, initialBoard);
     }
     return initialBoard;
