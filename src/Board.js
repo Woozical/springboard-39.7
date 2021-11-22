@@ -27,17 +27,23 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn }) {
-  const [board, setBoard] = useState(createBoard());
+function Board({ nrows, ncols, chanceLightStartsOn, initialActivations }) {
+  const [board, setBoard] = useState(createBoard);
 
-  /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+  /** create a board nrows high/ncols wide, with a initialActivations number of randomly-determined cells activated */
   function createBoard() {
     let initialBoard = [];
     for (let i = 0; i < nrows; i++){
       initialBoard.push(Array.from({length: ncols}));
       for (let j = 0; j < ncols; j++){
-        initialBoard[i][j] = Math.random() < chanceLightStartsOn ? true : false;
+        initialBoard[i][j] = false;
       }
+    } 
+    for (let n = 0; n < initialActivations; n++){
+      const x = Math.floor(Math.random() * ncols);
+      const y = Math.floor(Math.random() * nrows);
+      console.log(`Activating: (${x}, ${y})`);
+      initialBoard = flipCellsAround(`${y}-${x}`, false, initialBoard);
     }
     return initialBoard;
   }
@@ -46,43 +52,56 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
     return board.every( row => row.every( cell => cell === false ));
   }
 
-  function flipCellsAround(coord) {
-    setBoard(oldBoard => {
-      const [y, x] = coord.split("-").map(Number);
+  function flipCellsAround(coord, stateUpdate=true, oldBoard=board){
+    const [y, x] = coord.split("-").map(Number);
+    const flipCell = (y, x, boardCopy) => {
+      // if this coord is actually on the board, flip it
+      if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
+        boardCopy[y][x] = !boardCopy[y][x];
+      }
+    };
+    const updated = [...oldBoard];
+    flipCell(y, x, updated);
+    flipCell(y+1, x, updated);
+    flipCell(y, x+1, updated);
+    flipCell(y-1, x, updated);
+    flipCell(y, x-1, updated);
 
-      const flipCell = (y, x, boardCopy) => {
-        // if this coord is actually on board, flip it
-
-        if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
-          boardCopy[y][x] = !boardCopy[y][x];
-        }
-      };
-
-      const updated = [...oldBoard];
-
-      flipCell(y, x, updated);
-      flipCell(y+1, x, updated);
-      flipCell(y, x+1, updated);
-      flipCell(y-1, x, updated);
-      flipCell(y, x-1, updated);
-
+    if (stateUpdate){
+      setBoard(updated);
+      return;
+    } else {
       return updated;
-    });
+    }
+  }
+
+  function resetGame(){
+    setBoard( () => createBoard() );
   }
 
   // if the game is won, just show a winning msg & render nothing else
   if (hasWon()){
-    return <h1>You win!</h1>
+    return (
+      <div>
+        <h1>You win!</h1>
+        <button onClick={resetGame}>Restart</button>
+      </div>
+    )
   }
 
   // make table board
-  return (<table className="Board">
-    <tr>
-      <th colspan={ncols}>Lights Out</th>
-    </tr>
-    {board.map((row, y) => <tr>
-      {row.map((cellVal, x) => <Cell isLit={cellVal} coord={`${y}-${x}`} flipCellsAroundMe={flipCellsAround} />)}
+  return (
+  <table className="Board">
+    <thead>
+      <tr>
+        <th colSpan={ncols}>Lights Out</th>
+      </tr>
+    </thead>
+    <tbody>
+    {board.map((row, y) => <tr key={y}>
+      {row.map((cellVal, x) => <Cell key={`${y}-${x}`} isLit={cellVal} coord={`${y}-${x}`} flipCellsAroundMe={flipCellsAround} />)}
     </tr>)}
+    </tbody>
   </table>)
 }
 
