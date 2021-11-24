@@ -19,7 +19,7 @@ function Cell({ flipCellsAroundMe, coord, isLit }) {
   const handleClick = () => {
     flipCellsAroundMe(coord);
   }
-  return <td className={classes} onClick={handleClick} />;
+  return <td data-testid="cell" className={classes} onClick={handleClick} />;
 }
 
 export default Cell;
