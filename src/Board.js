@@ -98,14 +98,19 @@ function Board({ nrows, ncols, initialActivations }) {
     </thead>
     <tbody>
     {board.map((row, y) => <tr key={y}>
-      {row.map((cellVal, x) => <Cell key={`${y}-${x}`} isLit={cellVal} coord={`${y}-${x}`} flipCellsAroundMe={flipCellsAround} />)}
+      {row.map((cellVal, x) => 
+        <Cell key={`${y}-${x}`}
+              isLit={cellVal}
+              coord={`${y}-${x}`}
+              flipCellsAroundMe={flipCellsAround}
+        />)}
     </tr>)}
     </tbody>
   </table>)
 }
 
 Board.defaultProps = {
-  nrows: 3, ncols: 3, chanceLightStartsOn: 0.5
+  nrows: 3, ncols: 3, initialActivations: 7
 }
 
 export default Board;
